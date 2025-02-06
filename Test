@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biochemistry Quiz</title>
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <h2>Biochemistry Quiz</h2>
+    <form id="quizForm">
+        <label> Name: <input type="text" id="studentName" required></label> <br><br>
+        
+        <p>1. What is the main energy currency of the cell?</p>
+        <input type="radio" name="q1" value="ATP"> ATP<br>
+        <input type="radio" name="q1" value="DNA"> DNA<br>
+        <input type="radio" name="q1" value="RNA"> RNA<br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    <p id="result"></p>
+</body>
+</html>
