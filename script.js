@@ -1,8 +1,9 @@
-// Countdown timer set to 1 minute (60,000 milliseconds)
-const countDownTime = 1 * 60 * 1000;
+// Timer set to 2 minutes (120,000 milliseconds)
+const countDownTime = 2 * 60 * 1000;
 const countDownDate = new Date().getTime() + countDownTime;
 
-const x = setInterval(function() {
+// Start countdown timer
+const timer = setInterval(function() {
     const now = new Date().getTime();
     const distance = countDownDate - now;
 
@@ -12,9 +13,9 @@ const x = setInterval(function() {
     document.getElementById("countdown").innerHTML = `Time Left: ${minutes}m ${seconds}s`;
 
     if (distance < 0) {
-        clearInterval(x);
+        clearInterval(timer);
         document.getElementById("countdown").innerHTML = "Time is up!";
-        submitQuiz();
+        submitQuiz();  // Auto-submit when timer ends
     }
 }, 1000);
 
@@ -37,10 +38,11 @@ const correctAnswers = {
     q2: "c"
 };
 
-// Submit Quiz Function
+// Function to submit the quiz
 function submitQuiz() {
-    let studentName = document.getElementById("studentName").value || "Anonymous";
+    if (document.getElementById("quizForm").style.display === "none") return; // Prevent multiple submissions
 
+    let studentName = document.getElementById("studentName").value || "Anonymous";
     let q1 = document.querySelector('input[name="q1"]:checked');
     let q2 = document.querySelector('input[name="q2"]:checked');
 
@@ -55,14 +57,12 @@ function submitQuiz() {
     if (answers.q1 === correctAnswers.q1) score++;
     if (answers.q2 === correctAnswers.q2) score++;
 
-    let grade;
-    if (score === 2) grade = "A";
-    else if (score === 1) grade = "B";
-    else grade = "F";
+    let grade = score === 2 ? "A" : score === 1 ? "B" : "F";
 
     answers.score = score;
     answers.grade = grade;
 
+    // Save results to Firebase
     database.ref("quizResults").push(answers)
         .then(() => {
             document.getElementById("quizForm").style.display = "none";
@@ -76,8 +76,9 @@ function submitQuiz() {
         .catch(error => console.error("Error saving to database:", error));
 }
 
-// Manual Form Submission
+// Event listener for manual form submission
 document.getElementById("quizForm").addEventListener("submit", function(event) {
     event.preventDefault();
     submitQuiz();
+    clearInterval(timer);  // Stop timer when manually submitted
 });
