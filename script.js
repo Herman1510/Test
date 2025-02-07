@@ -1,3 +1,24 @@
+// Set the time for the countdown (2 hours in milliseconds)
+const countDownTime = 2 * 60 * 60 * 1000;
+const countDownDate = new Date().getTime() + countDownTime;
+
+const x = setInterval(function() {
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
+
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds}s`;
+
+    if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "Time is up!";
+        submitQuiz();
+    }
+}, 1000);
+
 // Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQdQOfuc1CLceg7TX4M",
@@ -10,42 +31,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
-
-// Correct Answers for Auto-Grading
-const correctAnswers = { q1: "d", q2: "c", q3: "a", q4: "e", q5: "c" };
-
-// Timer Variables
-let totalTime = 2 * 60 * 60; // 2 hours in seconds
-let timerInterval;
-
-// Function: Start the Timer (Runs Immediately)
-function startTimer() {
-    const timerDisplay = document.getElementById("timer");
-
-    if (!timerDisplay) {
-        console.error("Timer element not found!");
-        return;
-    }
-
-    function updateTimer() {
-        let hours = Math.floor(totalTime / 3600);
-        let minutes = Math.floor((totalTime % 3600) / 60);
-        let seconds = totalTime % 60;
-
-        timerDisplay.innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds < 10 ? "0" : ""}${seconds}s`;
-
-        if (totalTime <= 0) {
-            clearInterval(timerInterval);
-            alert("Time is up! Auto-submitting your quiz.");
-            submitQuiz();
-        } else {
-            totalTime--;
-        }
-    }
-
-    updateTimer();  
-    timerInterval = setInterval(updateTimer, 1000);
-}
 
 // Function: Submit Quiz
 function submitQuiz() {
@@ -67,70 +52,19 @@ function submitQuiz() {
         timestamp: new Date().toISOString()
     };
 
-    let score = 0;
-    if (studentAnswers.q1 === correctAnswers.q1) score++;
-    if (studentAnswers.q2 === correctAnswers.q2) score++;
-    if (studentAnswers.q3 === correctAnswers.q3) score++;
-    if (studentAnswers.q4 === correctAnswers.q4) score++;
-    if (studentAnswers.q5 === correctAnswers.q5) score++;
-
-    let totalQuestions = 5;
-    let percentage = (score / totalQuestions) * 100;
-    let grade = percentage >= 80 ? "A" :
-                percentage >= 70 ? "B" :
-                percentage >= 60 ? "C" :
-                percentage >= 50 ? "D" : "F";
-
-    studentAnswers.score = score;
-    studentAnswers.percentage = percentage;
-    studentAnswers.grade = grade;
-
     database.ref("quizResults").push(studentAnswers)
         .then(() => {
             alert("Quiz submitted successfully!");
-            clearInterval(timerInterval);
         })
         .catch(error => {
             console.error("Error saving to database:", error);
         });
 
-    document.getElementById("result").innerHTML = `
-        <h3>Submission Summary</h3>
-        <p><strong>Name:</strong> ${studentAnswers.name}</p>
-        <p><strong>Score:</strong> ${score}/${totalQuestions} (${percentage.toFixed(2)}%)</p>
-        <p><strong>Grade:</strong> ${grade}</p>
-    `;
-
     document.getElementById("quizForm").style.display = "none";
 }
-
-// Start Timer when page loads
-window.onload = function () {
-    startTimer();
-};
 
 // Manual Form Submission
 document.getElementById("quizForm").addEventListener("submit", function(event) {
     event.preventDefault();
     submitQuiz();
-});
-
-// Display All Submissions (For Teachers)
-const resultsRef = database.ref("quizResults");
-resultsRef.on("value", function(snapshot) {
-    let data = snapshot.val();
-    let resultsHTML = "<h3>Quiz Submissions</h3><table border='1'><tr><th>Name</th><th>Score</th><th>Percentage</th><th>Grade</th><th>Time</th></tr>";
-
-    for (let key in data) {
-        resultsHTML += `<tr>
-            <td>${data[key].name}</td>
-            <td>${data[key].score}</td>
-            <td>${data[key].percentage.toFixed(2)}%</td>
-            <td>${data[key].grade}</td>
-            <td>${new Date(data[key].timestamp).toLocaleString()}</td>
-        </tr>`;
-    }
-
-    resultsHTML += "</table>";
-    document.getElementById("teacherResults").innerHTML = resultsHTML;
 });
