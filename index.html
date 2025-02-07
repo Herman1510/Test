@@ -3,75 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Quiz</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-    <script src="script.js" defer></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-        }
-        #timer {
-            font-size: 20px;
-            font-weight: bold;
-            color: red;
-        }
-        .hidden { display: none; }
-    </style>
+    <title>Countdown Timer Quiz</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <h1>Online Quiz</h1>
-    <h2 id="timer">Time Left: 2h 00m 00s</h2>
-
-    <!-- Student Name Input -->
-    <label for="studentName"><strong>Enter Your Name:</strong></label>
-    <input type="text" id="studentName" required>
-    
-    <!-- Quiz Form -->
+    <div id="countdown">Loading...</div>
     <form id="quizForm">
-        <h3>1. Which of the following is NOT a condition treated using stem cells?</h3>
+        <label for="studentName">Name:</label>
+        <input type="text" id="studentName" required><br><br>
+
+        <p>1. Which of the following is NOT a condition treated with stem cells?</p>
         <input type="radio" name="q1" value="a"> Spinal cord injuries<br>
         <input type="radio" name="q1" value="b"> Leukemia<br>
         <input type="radio" name="q1" value="c"> Heart diseases<br>
-        <input type="radio" name="q1" value="d"> Aging<br>
+        <input type="radio" name="q1" value="d"> Aging<br><br>
 
-        <h3>2. What type of epithelial tissue is found in the bronchi?</h3>
-        <input type="radio" name="q2" value="a"> Simple squamous<br>
-        <input type="radio" name="q2" value="b"> Stratified cuboidal<br>
-        <input type="radio" name="q2" value="c"> Stratified squamous<br>
-        <input type="radio" name="q2" value="d"> Simple cuboidal<br>
+        <p>2. The epithelial tissue found in bronchi and urinary bladder in vitamin A deficiency is replaced by?</p>
+        <input type="radio" name="q2" value="a"> Simple squamous epithelium<br>
+        <input type="radio" name="q2" value="b"> Simple cuboidal epithelium<br>
+        <input type="radio" name="q2" value="c"> Stratified squamous epithelium<br>
+        <input type="radio" name="q2" value="d"> Stratified cuboidal epithelium<br><br>
 
-        <h3>3. Who proposed the Cell Theory?</h3>
+        <p>3. Who proposed the cell theory?</p>
         <input type="radio" name="q3" value="a"> Theodor Schwann, James Watson, and Robert Hooke<br>
-        <input type="radio" name="q3" value="b"> Epithelial cell<br>
-        <input type="radio" name="q3" value="c"> Connective tissue cell<br>
-        <input type="radio" name="q3" value="d"> Nerve cell<br>
+        <input type="radio" name="q3" value="b"> James Watson, Rudolf Virchow, and Theodor Schwann<br>
+        <input type="radio" name="q3" value="c"> Theodor Schwann, Matthias Schleiden, and Rudolf Virchow<br>
+        <input type="radio" name="q3" value="d"> Theodor Schwann, Rudolf Virchow, and Robert Hooke<br><br>
 
-        <h3>4. Which group proposed the Cell Theory?</h3>
-        <input type="radio" name="q4" value="a"> Theodor Schwann, Matthias Schleiden, and Rudolf Virchow<br>
-        <input type="radio" name="q4" value="b"> James Watson, Rudolf Virchow, and Theodor Schwann<br>
-        <input type="radio" name="q4" value="c"> Theodor Schwann, Matthias Schleiden, and Robert Hooke<br>
-        <input type="radio" name="q4" value="e"> Theodor Schwann, Rudolf Virchow, and Robert Hooke<br>
+        <p>4. A microscope with an average Numerical Aperture of 1.25 has an approximate total magnification of:</p>
+        <input type="radio" name="q4" value="a"> 100<br>
+        <input type="radio" name="q4" value="b"> 500<br>
+        <input type="radio" name="q4" value="c"> 1000<br>
+        <input type="radio" name="q4" value="d"> 1500<br><br>
 
-        <h3>5. A microscope with a numerical aperture of 1.25 has an approximate total magnification of:</h3>
-        <input type="radio" name="q5" value="a"> 100<br>
-        <input type="radio" name="q5" value="b"> 500<br>
-        <input type="radio" name="q5" value="c"> 1500<br>
-        <input type="radio" name="q5" value="d"> 1000<br>
+        <p>5. Which of the following is a connective tissue cell?</p>
+        <input type="radio" name="q5" value="a"> Myocyte<br>
+        <input type="radio" name="q5" value="b"> Epithelial cell<br>
+        <input type="radio" name="q5" value="c"> Connective tissue cell<br>
+        <input type="radio" name="q5" value="d"> Nerve cell<br><br>
 
-        <br>
-        <button type="submit">Submit</button>
+        <input type="submit" value="Submit">
     </form>
 
-    <!-- Results Display -->
     <div id="result"></div>
 
-    <!-- Teacher View -->
-    <div id="teacherResults"></div>
-
+    <script src="script.js"></script>
 </body>
 </html>
