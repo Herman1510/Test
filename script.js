@@ -1,4 +1,4 @@
-// ✅ Firebase Setup
+// Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQdQOfuc1CLceg7TX4M",
     authDomain: "herman-e5894.firebaseapp.com",
@@ -11,47 +11,46 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// ✅ Correct Answers for Auto-Grading
+// Correct Answers for Auto-Grading
 const correctAnswers = { q1: "d", q2: "c", q3: "a", q4: "e", q5: "c" };
 
-// ✅ TIMER VARIABLES
+// Timer Variables
 let totalTime = 2 * 60 * 60; // 2 hours in seconds
 let timerInterval;
 
-// ✅ FUNCTION: Start the Timer
+// Function: Start the Timer (Runs Immediately)
 function startTimer() {
     const timerDisplay = document.getElementById("timer");
 
-    // Make sure the element exists before running the timer
     if (!timerDisplay) {
         console.error("Timer element not found!");
         return;
     }
 
-    timerInterval = setInterval(() => {
+    function updateTimer() {
         let hours = Math.floor(totalTime / 3600);
         let minutes = Math.floor((totalTime % 3600) / 60);
         let seconds = totalTime % 60;
 
-        // Update the timer display
-        timerDisplay.innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds}s`;
+        timerDisplay.innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds < 10 ? "0" : ""}${seconds}s`;
 
-        // Stop the timer and auto-submit when time is up
         if (totalTime <= 0) {
             clearInterval(timerInterval);
             alert("Time is up! Auto-submitting your quiz.");
             submitQuiz();
+        } else {
+            totalTime--;
         }
+    }
 
-        totalTime--; // Reduce time by 1 second
-    }, 1000);
+    updateTimer();  
+    timerInterval = setInterval(updateTimer, 1000);
 }
 
-// ✅ FUNCTION: Submit Quiz
+// Function: Submit Quiz
 function submitQuiz() {
     let studentName = document.getElementById("studentName").value || "Anonymous";
 
-    // Get selected answers
     let q1 = document.querySelector('input[name="q1"]:checked');
     let q2 = document.querySelector('input[name="q2"]:checked');
     let q3 = document.querySelector('input[name="q3"]:checked');
@@ -68,7 +67,6 @@ function submitQuiz() {
         timestamp: new Date().toISOString()
     };
 
-    // ✅ Calculate Score
     let score = 0;
     if (studentAnswers.q1 === correctAnswers.q1) score++;
     if (studentAnswers.q2 === correctAnswers.q2) score++;
@@ -83,7 +81,6 @@ function submitQuiz() {
                 percentage >= 60 ? "C" :
                 percentage >= 50 ? "D" : "F";
 
-    // ✅ Save to Firebase
     studentAnswers.score = score;
     studentAnswers.percentage = percentage;
     studentAnswers.grade = grade;
@@ -91,13 +88,12 @@ function submitQuiz() {
     database.ref("quizResults").push(studentAnswers)
         .then(() => {
             alert("Quiz submitted successfully!");
-            clearInterval(timerInterval); // Stop timer
+            clearInterval(timerInterval);
         })
         .catch(error => {
             console.error("Error saving to database:", error);
         });
 
-    // ✅ Show Results
     document.getElementById("result").innerHTML = `
         <h3>Submission Summary</h3>
         <p><strong>Name:</strong> ${studentAnswers.name}</p>
@@ -105,20 +101,21 @@ function submitQuiz() {
         <p><strong>Grade:</strong> ${grade}</p>
     `;
 
-    // ✅ Hide Quiz Form
     document.getElementById("quizForm").style.display = "none";
 }
 
-// ✅ Start Timer when page loads
-window.addEventListener("load", startTimer);
+// Start Timer when page loads
+window.onload = function () {
+    startTimer();
+};
 
-// ✅ Manual Form Submission
+// Manual Form Submission
 document.getElementById("quizForm").addEventListener("submit", function(event) {
     event.preventDefault();
     submitQuiz();
 });
 
-// ✅ Display All Submissions (For Teachers)
+// Display All Submissions (For Teachers)
 const resultsRef = database.ref("quizResults");
 resultsRef.on("value", function(snapshot) {
     let data = snapshot.val();
