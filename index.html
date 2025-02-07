@@ -3,21 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biochemistry Quiz</title>
+    <title>Quiz Submission</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script defer src="script.js"></script>
 </head>
 <body>
-    <h2>Biochemistry Quiz</h2>
-    <form id="quizForm">
-        <label> Name: <input type="text" id="studentName" required></label> <br><br>
-        
-        <p>1. What is the main energy currency of the cell?</p>
-        <input type="radio" name="q1" value="ATP"> ATP<br>
-        <input type="radio" name="q1" value="DNA"> DNA<br>
-        <input type="radio" name="q1" value="RNA"> RNA<br><br>
+    <h1>Online Quiz</h1>
 
-        <button type="submit">Submit</button>
+    <!-- Student Quiz Form -->
+    <form id="quizForm">
+        <label for="studentName"><strong>Your Name:</strong></label>
+        <input type="text" id="studentName" required>
+        
+        <h3>Question 1: Which of the following is NOT a condition treated with stem cells?</h3>
+        <input type="radio" name="q1" value="a"> a) Spinal cord injuries<br>
+        <input type="radio" name="q1" value="b"> b) Heart diseases<br>
+        <input type="radio" name="q1" value="c"> c) Leukemia<br>
+        <input type="radio" name="q1" value="d"> d) Diabetes mellitus<br>
+        <input type="radio" name="q1" value="e"> e) Aging<br>
+
+        <h3>Question 2: A microscope with an average Numerical Aperture of 1.25 has an approximate total magnification of:</h3>
+        <input type="radio" name="q2" value="a"> a) 100<br>
+        <input type="radio" name="q2" value="b"> b) 500<br>
+        <input type="radio" name="q2" value="c"> c) 1500<br>
+        <input type="radio" name="q2" value="d"> d) 1000<br>
+        <input type="radio" name="q2" value="e"> e) Simple cuboidal epithelium<br>
+
+        <h3>Question 3: Which type of epithelial tissue is found in bronchi and the urinary bladder?</h3>
+        <input type="radio" name="q3" value="a"> a) Simple squamous epithelium<br>
+        <input type="radio" name="q3" value="b"> b) Connective tissue cells<br>
+        <input type="radio" name="q3" value="c"> c) Stratified squamous epithelium<br>
+        <input type="radio" name="q3" value="d"> d) Stratified cuboidal epithelium<br>
+        <input type="radio" name="q3" value="e"> e) Theodor Schwann, Rudolf Virchow, and Robert Hooke<br>
+
+        <h3>Question 4: Who proposed the cell theory?</h3>
+        <input type="radio" name="q4" value="a"> a) Theodor Schwann, James Watson, and Robert Hooke<br>
+        <input type="radio" name="q4" value="b"> b) Epithelial cell<br>
+        <input type="radio" name="q4" value="c"> c) Theodor Schwann, Matthias Schleiden, and Rudolf Virchow<br>
+        <input type="radio" name="q4" value="d"> d) Nerve cell<br>
+        <input type="radio" name="q4" value="e"> e) Theodor Schwann, Rudolf Virchow, and Robert Hooke<br>
+
+        <h3>Question 5: Which of the following is a myocyte?</h3>
+        <input type="radio" name="q5" value="a"> a) Myofiber<br>
+        <input type="radio" name="q5" value="b"> b) Heart diseases<br>
+        <input type="radio" name="q5" value="c"> c) A blood cell<br>
+        <input type="radio" name="q5" value="d"> d) James Watson, Rudolf Virchow, Theodor Schwann<br>
+        <input type="radio" name="q5" value="e"> e) 500<br>
+
+        <br>
+        <button type="submit">Submit Quiz</button>
     </form>
-    <p id="result"></p>
+
+    <!-- Student Submission Result -->
+    <h2>Your Submission</h2>
+    <div id="result"></div>
+
+    <!-- Teacher's View -->
+    <h2>Teacher's View: Quiz Submissions</h2>
+    <div id="teacherResults"></div>
+
 </body>
 </html>
