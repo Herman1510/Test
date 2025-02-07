@@ -1,6 +1,6 @@
-// Initialize Firebase
+// ✅ Firebase Setup
 const firebaseConfig = {
-    apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQdOfuc1CLceg7TX4M",
+    apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQdQOfuc1CLceg7TX4M",
     authDomain: "herman-e5894.firebaseapp.com",
     databaseURL: "https://herman-e5894-default-rtdb.firebaseio.com",
     projectId: "herman-e5894",
@@ -8,50 +8,46 @@ const firebaseConfig = {
     messagingSenderId: "17968105226",
     appId: "1:17968105226:web:d7c2852d574327495a1cf3"
 };
-
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Correct Answers
-const correctAnswers = {
-    q1: "d",
-    q2: "c",
-    q3: "a",
-    q4: "e",
-    q5: "c"
-};
+// ✅ Correct Answers for Auto-Grading
+const correctAnswers = { q1: "d", q2: "c", q3: "a", q4: "e", q5: "c" };
 
-// Timer Variables
+// ✅ TIMER VARIABLES
 let totalTime = 2 * 60 * 60; // 2 hours in seconds
 let timerInterval;
 
-// Function to start countdown timer
+// ✅ FUNCTION: Start the Timer
 function startTimer() {
     const timerDisplay = document.getElementById("timer");
-    
+
+    // Make sure the element exists before running the timer
+    if (!timerDisplay) {
+        console.error("Timer element not found!");
+        return;
+    }
+
     timerInterval = setInterval(() => {
         let hours = Math.floor(totalTime / 3600);
         let minutes = Math.floor((totalTime % 3600) / 60);
         let seconds = totalTime % 60;
 
-        // Format time display
+        // Update the timer display
         timerDisplay.innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds}s`;
 
-        // If time runs out, auto-submit the quiz
+        // Stop the timer and auto-submit when time is up
         if (totalTime <= 0) {
             clearInterval(timerInterval);
             alert("Time is up! Auto-submitting your quiz.");
             submitQuiz();
         }
 
-        totalTime--; // Reduce time
+        totalTime--; // Reduce time by 1 second
     }, 1000);
 }
 
-// Start timer when page loads
-window.addEventListener("load", startTimer);
-
-// Function to submit quiz
+// ✅ FUNCTION: Submit Quiz
 function submitQuiz() {
     let studentName = document.getElementById("studentName").value || "Anonymous";
 
@@ -72,7 +68,7 @@ function submitQuiz() {
         timestamp: new Date().toISOString()
     };
 
-    // Calculate score
+    // ✅ Calculate Score
     let score = 0;
     if (studentAnswers.q1 === correctAnswers.q1) score++;
     if (studentAnswers.q2 === correctAnswers.q2) score++;
@@ -87,7 +83,7 @@ function submitQuiz() {
                 percentage >= 60 ? "C" :
                 percentage >= 50 ? "D" : "F";
 
-    // Save to Firebase
+    // ✅ Save to Firebase
     studentAnswers.score = score;
     studentAnswers.percentage = percentage;
     studentAnswers.grade = grade;
@@ -101,7 +97,7 @@ function submitQuiz() {
             console.error("Error saving to database:", error);
         });
 
-    // Display results to student
+    // ✅ Show Results
     document.getElementById("result").innerHTML = `
         <h3>Submission Summary</h3>
         <p><strong>Name:</strong> ${studentAnswers.name}</p>
@@ -109,17 +105,20 @@ function submitQuiz() {
         <p><strong>Grade:</strong> ${grade}</p>
     `;
 
-    // Hide the quiz form after submission
+    // ✅ Hide Quiz Form
     document.getElementById("quizForm").style.display = "none";
 }
 
-// Manual submission
+// ✅ Start Timer when page loads
+window.addEventListener("load", startTimer);
+
+// ✅ Manual Form Submission
 document.getElementById("quizForm").addEventListener("submit", function(event) {
     event.preventDefault();
     submitQuiz();
 });
 
-// Display stored results for teachers
+// ✅ Display All Submissions (For Teachers)
 const resultsRef = database.ref("quizResults");
 resultsRef.on("value", function(snapshot) {
     let data = snapshot.val();
