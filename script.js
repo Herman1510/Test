@@ -1,6 +1,6 @@
 // Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQOfuc1CLceg7TX4M",
+    apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQdOfuc1CLceg7TX4M",
     authDomain: "herman-e5894.firebaseapp.com",
     databaseURL: "https://herman-e5894-default-rtdb.firebaseio.com",
     projectId: "herman-e5894",
@@ -21,11 +21,38 @@ const correctAnswers = {
     q5: "c"
 };
 
-// Handle quiz submission
-document.getElementById("quizForm").addEventListener("submit", function(event) {
-    event.preventDefault();
+// Timer Variables
+let totalTime = 2 * 60 * 60; // 2 hours in seconds
+let timerInterval;
 
-    // Get student name
+// Start the timer when the page loads
+window.onload = function () {
+    startTimer();
+};
+
+// Function to start countdown timer
+function startTimer() {
+    const timerDisplay = document.getElementById("timer");
+    timerInterval = setInterval(() => {
+        let hours = Math.floor(totalTime / 3600);
+        let minutes = Math.floor((totalTime % 3600) / 60);
+        let seconds = totalTime % 60;
+
+        // Display timer
+        timerDisplay.innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds}s`;
+
+        if (totalTime <= 0) {
+            clearInterval(timerInterval);
+            alert("Time is up! Auto-submitting your quiz.");
+            submitQuiz(); // Auto-submit when time reaches 0
+        }
+
+        totalTime--; // Decrease time by 1 second
+    }, 1000);
+}
+
+// Function to submit quiz
+function submitQuiz() {
     let studentName = document.getElementById("studentName").value;
 
     // Get selected answers
@@ -35,30 +62,24 @@ document.getElementById("quizForm").addEventListener("submit", function(event) {
     let q4 = document.querySelector('input[name="q4"]:checked');
     let q5 = document.querySelector('input[name="q5"]:checked');
 
-    // Validate that all questions are answered
-    if (!q1 || !q2 || !q3 || !q4 || !q5) {
-        alert("Please answer all questions before submitting.");
-        return;
-    }
-
-    // Store answers
+    // If time runs out and student didn't answer, assign empty values
     let studentAnswers = {
-        name: studentName,
-        q1: q1.value,
-        q2: q2.value,
-        q3: q3.value,
-        q4: q4.value,
-        q5: q5.value,
+        name: studentName || "Anonymous",
+        q1: q1 ? q1.value : "No Answer",
+        q2: q2 ? q2.value : "No Answer",
+        q3: q3 ? q3.value : "No Answer",
+        q4: q4 ? q4.value : "No Answer",
+        q5: q5 ? q5.value : "No Answer",
         timestamp: new Date().toISOString()
     };
 
     // Calculate score
     let score = 0;
-    if (q1.value === correctAnswers.q1) score++;
-    if (q2.value === correctAnswers.q2) score++;
-    if (q3.value === correctAnswers.q3) score++;
-    if (q4.value === correctAnswers.q4) score++;
-    if (q5.value === correctAnswers.q5) score++;
+    if (studentAnswers.q1 === correctAnswers.q1) score++;
+    if (studentAnswers.q2 === correctAnswers.q2) score++;
+    if (studentAnswers.q3 === correctAnswers.q3) score++;
+    if (studentAnswers.q4 === correctAnswers.q4) score++;
+    if (studentAnswers.q5 === correctAnswers.q5) score++;
 
     let totalQuestions = 5;
     let percentage = (score / totalQuestions) * 100;
@@ -85,6 +106,7 @@ document.getElementById("quizForm").addEventListener("submit", function(event) {
     database.ref("quizResults").push(studentAnswers)
         .then(() => {
             alert("Quiz submitted successfully!");
+            clearInterval(timerInterval); // Stop timer
         })
         .catch(error => {
             console.error("Error saving to database:", error);
@@ -93,13 +115,19 @@ document.getElementById("quizForm").addEventListener("submit", function(event) {
     // Display results to the student
     document.getElementById("result").innerHTML = `
         <h3>Submission Summary</h3>
-        <p><strong>Name:</strong> ${studentName}</p>
+        <p><strong>Name:</strong> ${studentAnswers.name}</p>
         <p><strong>Score:</strong> ${score}/${totalQuestions} (${percentage.toFixed(2)}%)</p>
         <p><strong>Grade:</strong> ${grade}</p>
     `;
 
-    // Clear form after submission
-    document.getElementById("quizForm").reset();
+    // Hide the quiz form after submission
+    document.getElementById("quizForm").style.display = "none";
+}
+
+// Event listener for manual submission
+document.getElementById("quizForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    submitQuiz();
 });
 
 // Display stored results for teachers
