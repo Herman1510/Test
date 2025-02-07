@@ -12,7 +12,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Correct answers
+// Correct Answers
 const correctAnswers = {
     q1: "d",
     q2: "c",
@@ -25,35 +25,35 @@ const correctAnswers = {
 let totalTime = 2 * 60 * 60; // 2 hours in seconds
 let timerInterval;
 
-// Start the timer when the page loads
-window.onload = function () {
-    startTimer();
-};
-
 // Function to start countdown timer
 function startTimer() {
     const timerDisplay = document.getElementById("timer");
+    
     timerInterval = setInterval(() => {
         let hours = Math.floor(totalTime / 3600);
         let minutes = Math.floor((totalTime % 3600) / 60);
         let seconds = totalTime % 60;
 
-        // Display timer
+        // Format time display
         timerDisplay.innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds}s`;
 
+        // If time runs out, auto-submit the quiz
         if (totalTime <= 0) {
             clearInterval(timerInterval);
             alert("Time is up! Auto-submitting your quiz.");
-            submitQuiz(); // Auto-submit when time reaches 0
+            submitQuiz();
         }
 
-        totalTime--; // Decrease time by 1 second
+        totalTime--; // Reduce time
     }, 1000);
 }
 
+// Start timer when page loads
+window.addEventListener("load", startTimer);
+
 // Function to submit quiz
 function submitQuiz() {
-    let studentName = document.getElementById("studentName").value;
+    let studentName = document.getElementById("studentName").value || "Anonymous";
 
     // Get selected answers
     let q1 = document.querySelector('input[name="q1"]:checked');
@@ -62,9 +62,8 @@ function submitQuiz() {
     let q4 = document.querySelector('input[name="q4"]:checked');
     let q5 = document.querySelector('input[name="q5"]:checked');
 
-    // If time runs out and student didn't answer, assign empty values
     let studentAnswers = {
-        name: studentName || "Anonymous",
+        name: studentName,
         q1: q1 ? q1.value : "No Answer",
         q2: q2 ? q2.value : "No Answer",
         q3: q3 ? q3.value : "No Answer",
@@ -83,20 +82,10 @@ function submitQuiz() {
 
     let totalQuestions = 5;
     let percentage = (score / totalQuestions) * 100;
-    let grade = "";
-
-    // Assign grade
-    if (percentage >= 80) {
-        grade = "A";
-    } else if (percentage >= 70) {
-        grade = "B";
-    } else if (percentage >= 60) {
-        grade = "C";
-    } else if (percentage >= 50) {
-        grade = "D";
-    } else {
-        grade = "F";
-    }
+    let grade = percentage >= 80 ? "A" :
+                percentage >= 70 ? "B" :
+                percentage >= 60 ? "C" :
+                percentage >= 50 ? "D" : "F";
 
     // Save to Firebase
     studentAnswers.score = score;
@@ -112,7 +101,7 @@ function submitQuiz() {
             console.error("Error saving to database:", error);
         });
 
-    // Display results to the student
+    // Display results to student
     document.getElementById("result").innerHTML = `
         <h3>Submission Summary</h3>
         <p><strong>Name:</strong> ${studentAnswers.name}</p>
@@ -124,7 +113,7 @@ function submitQuiz() {
     document.getElementById("quizForm").style.display = "none";
 }
 
-// Event listener for manual submission
+// Manual submission
 document.getElementById("quizForm").addEventListener("submit", function(event) {
     event.preventDefault();
     submitQuiz();
