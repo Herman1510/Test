@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer Quiz</title>
+    <title>Quiz with Timer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <h2>Biochemistry & Pathology Quiz</h2>
     <div id="countdown">Loading...</div>
     <form id="quizForm">
         <label for="studentName">Name:</label>
@@ -24,29 +25,13 @@
         <input type="radio" name="q2" value="c"> Stratified squamous epithelium<br>
         <input type="radio" name="q2" value="d"> Stratified cuboidal epithelium<br><br>
 
-        <p>3. Who proposed the cell theory?</p>
-        <input type="radio" name="q3" value="a"> Theodor Schwann, James Watson, and Robert Hooke<br>
-        <input type="radio" name="q3" value="b"> James Watson, Rudolf Virchow, and Theodor Schwann<br>
-        <input type="radio" name="q3" value="c"> Theodor Schwann, Matthias Schleiden, and Rudolf Virchow<br>
-        <input type="radio" name="q3" value="d"> Theodor Schwann, Rudolf Virchow, and Robert Hooke<br><br>
-
-        <p>4. A microscope with an average Numerical Aperture of 1.25 has an approximate total magnification of:</p>
-        <input type="radio" name="q4" value="a"> 100<br>
-        <input type="radio" name="q4" value="b"> 500<br>
-        <input type="radio" name="q4" value="c"> 1000<br>
-        <input type="radio" name="q4" value="d"> 1500<br><br>
-
-        <p>5. Which of the following is a connective tissue cell?</p>
-        <input type="radio" name="q5" value="a"> Myocyte<br>
-        <input type="radio" name="q5" value="b"> Epithelial cell<br>
-        <input type="radio" name="q5" value="c"> Connective tissue cell<br>
-        <input type="radio" name="q5" value="d"> Nerve cell<br><br>
-
         <input type="submit" value="Submit">
     </form>
 
     <div id="result"></div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
