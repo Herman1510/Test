@@ -1,16 +1,15 @@
-// Set the time for the countdown (2 hours in milliseconds)
-const countDownTime = 2 * 60 * 60 * 1000;
+// Countdown timer set to 1 minute (60,000 milliseconds)
+const countDownTime = 1 * 60 * 1000;
 const countDownDate = new Date().getTime() + countDownTime;
 
 const x = setInterval(function() {
     const now = new Date().getTime();
     const distance = countDownDate - now;
 
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    document.getElementById("countdown").innerHTML = `Time Left: ${hours}h ${minutes}m ${seconds}s`;
+    document.getElementById("countdown").innerHTML = `Time Left: ${minutes}m ${seconds}s`;
 
     if (distance < 0) {
         clearInterval(x);
@@ -19,7 +18,7 @@ const x = setInterval(function() {
     }
 }, 1000);
 
-// Firebase Setup
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBVEMqQEwLmpzCwGQdQdQOfuc1CLceg7TX4M",
     authDomain: "herman-e5894.firebaseapp.com",
@@ -32,35 +31,49 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Function: Submit Quiz
+// Correct Answers
+const correctAnswers = {
+    q1: "d",
+    q2: "c"
+};
+
+// Submit Quiz Function
 function submitQuiz() {
     let studentName = document.getElementById("studentName").value || "Anonymous";
 
     let q1 = document.querySelector('input[name="q1"]:checked');
     let q2 = document.querySelector('input[name="q2"]:checked');
-    let q3 = document.querySelector('input[name="q3"]:checked');
-    let q4 = document.querySelector('input[name="q4"]:checked');
-    let q5 = document.querySelector('input[name="q5"]:checked');
 
-    let studentAnswers = {
+    let answers = {
         name: studentName,
         q1: q1 ? q1.value : "No Answer",
         q2: q2 ? q2.value : "No Answer",
-        q3: q3 ? q3.value : "No Answer",
-        q4: q4 ? q4.value : "No Answer",
-        q5: q5 ? q5.value : "No Answer",
         timestamp: new Date().toISOString()
     };
 
-    database.ref("quizResults").push(studentAnswers)
-        .then(() => {
-            alert("Quiz submitted successfully!");
-        })
-        .catch(error => {
-            console.error("Error saving to database:", error);
-        });
+    let score = 0;
+    if (answers.q1 === correctAnswers.q1) score++;
+    if (answers.q2 === correctAnswers.q2) score++;
 
-    document.getElementById("quizForm").style.display = "none";
+    let grade;
+    if (score === 2) grade = "A";
+    else if (score === 1) grade = "B";
+    else grade = "F";
+
+    answers.score = score;
+    answers.grade = grade;
+
+    database.ref("quizResults").push(answers)
+        .then(() => {
+            document.getElementById("quizForm").style.display = "none";
+            document.getElementById("result").innerHTML = `
+                <h3>Quiz Submitted!</h3>
+                <p>Name: ${studentName}</p>
+                <p>Score: ${score}/2</p>
+                <p>Grade: ${grade}</p>
+            `;
+        })
+        .catch(error => console.error("Error saving to database:", error));
 }
 
 // Manual Form Submission
